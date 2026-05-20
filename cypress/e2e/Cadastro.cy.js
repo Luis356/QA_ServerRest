@@ -1,46 +1,58 @@
 describe('Cadastro de usuário', () => {
   it('Cadastro de usuário regular com sucesso', () => {
-    
-    // AÇÃO
-    cy.visit('https://front.serverest.dev/cadastrarusuarios') 
-    cy.get('#nome').type('PEDRO SILVA')
-    cy.get('#email').type('predo.silva@example.com')
-    cy.get('#password').type('senha123')
+    cy.intercept('POST', '**/usuarios').as('cadastroRegular')
+    cy.pagina('/cadastrarusuarios')
+    cy.campos('Leãozinho', 'leaozinhou@example.com', 'senha123', false)
     cy.get('[data-testid="cadastrar"]').click()
 
-    // ASSERÇÃO
-    cy.contains('Cadastro realizado com sucesso').should('be.visible')
-    
-  })
-  
-  it.only('Cadastro de usuário admin com sucesso', () => {
-    
+    cy.wait('@cadastroRegular').then((interception) => {
+      expect(interception.response.statusCode).to.eq(201)
+      const userId = interception.response.body._id
+      cy.contains('Cadastro realizado com sucesso').should('be.visible')
+      cy.request('DELETE', `https://serverest.dev/usuarios/${userId}`).then((response) => {
+        expect(response.status).to.eq(200)
+      })
+    })
+  }) // Teste para cadastro de usuário regular (Exclui usuário no final do teste) - FUNCIONANDO
+
+  it('Cadastro de usuário admin com sucesso', () => {
     cy.intercept('POST', '**/usuarios').as('cadastroAdmin')
-    
-    //  statusCode: 201,
-    //  body: {
-    //    message: 'Cadastro realizado com sucesso'
-    //  }
-    //}).as('cadastroAdmin')
-    
-    cy.visit('https://front.serverest.dev/cadastrarusuarios') 
-    cy.get('#nome').type('Victorino Salina')
-    cy.get('#email').type('victorino.salina@example.com')
-    cy.get('#password').type('senha123')
-    cy.get('#administrador').check()
+    cy.pagina('/cadastrarusuarios')
+    cy.campos('Victorino Salina', 'victorino.salina1@example.com', 'senha123', true)
     cy.get('[data-testid="cadastrar"]').click()
-    
-    cy.wait('@cadastroAdmin').its('response.statusCode').should('eq',201)
-    cy.contains('Cadastro realizado com sucesso').should('be.visible')
 
-  })
+    cy.wait('@cadastroAdmin').then((interception) => {
+      expect(interception.response.statusCode).to.eq(201)
+      const userId = interception.response.body._id
+      cy.contains('Cadastro realizado com sucesso').should('be.visible')
+
+      cy.request('DELETE', `https://serverest.dev/usuarios/${userId}`).then((response) => {
+        expect(response.status).to.eq(200)
+      })
+  
+    })
+  }) // Teste para cadastro de usuário admin - FUNCIONANDO
 
   it('Cadastro sem sucesso - sem credenciais fornecidas', () => {
-    
+    cy.intercept('POST', '**/usuarios').as('cadastroSemCredenciais')
+    cy.pagina('/cadastrarusuarios')
+    cy.get('[data-testid="cadastrar"]').click()
+
+    cy.wait('@cadastroSemCredenciais').its('response.statusCode').should('eq', 400)
+    cy.contains('Nome é obrigatório').should('be.visible')
+    cy.contains('Email é obrigatório').should('be.visible')
+    cy.contains('Password é obrigatório').should('be.visible')
+    // Criar sistema para deletar usuário admin criado após teste para evitar acúmulo de dados no banco
   })
 
   it('Cadastro sem sucesso - usuário já cadastrado', () => {
-    
+    cy.intercept('POST', '**/usuarios').as('usuarioExistente')
+    cy.pagina('/cadastrarusuarios')
+    cy.campos('Victorino Salina', 'victorino.salina@example.com', 'senha123', true)
+    cy.get('[data-testid="cadastrar"]').click()
+
+    cy.wait('@usuarioExistente').its('response.statusCode').should('eq', 400)
+    cy.contains('Este email já está sendo usado').should('be.visible')
   })
 
 })
