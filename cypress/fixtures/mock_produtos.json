@@ -2,30 +2,30 @@
     "quantidade": 4,
     "produtos": [
         {
-            "nome": "Samsung Galaxy S24",
-            "preco": 3500,
+            "nome": "Apple iPhone 15 Pro",
+            "preco": 7999,
             "descricao": "Smartphone",
             "quantidade": 125,
             "_id": "BeeJh5lz3k6kSIzA"
         },
         {
-            "nome": "Sony WH-1000XM5",
-            "preco": 1200,
+            "nome": "Apple AirPods Pro",
+            "preco": 1899,
             "descricao": "Fone de Ouvido",
             "quantidade": 87,
             "_id": "TmK9pL2vX8nQ4rWf"
         },
         {
             "nome": "Apple Watch Series 9",
-            "preco": 2800,
+            "preco": 2799,
             "descricao": "Smartwatch",
             "quantidade": 64,
             "_id": "DmN5jK3bY7vH2sQe"
         },
         {
-            "nome": "iPad Air 11 polegadas",
-            "preco": 5200,
-            "descricao": "Tablet",
+            "nome": "Apple MacBook Air M3",
+            "preco": 8499,
+            "descricao": "Notebook",
             "quantidade": 41,
             "_id": "CxR8hF1wL9mP3jTd"
         }
