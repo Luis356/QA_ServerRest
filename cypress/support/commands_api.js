@@ -13,21 +13,6 @@ Cypress.Commands.add('deleteUsuario', (email) => {
     })
 })
 
-Cypress.Commands.add('deleteProduto', (nome) => {
-    cy.request({
-        method: 'GET',
-        url: 'https://serverest.dev/produtos',
-        qs: {
-            nome: nome
-        }
-    }).then((response) => {
-        cy.request({
-            method: 'DELETE',
-            url: `https://serverest.dev/produtos/${response.body.produtos[0]._id}`,
-        })
-    })
-})
-
 Cypress.Commands.add('apiLogin', (email, senha) => {
     cy.request('POST', 'https://serverest.dev/login', {
         email: email,

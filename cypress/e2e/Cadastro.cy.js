@@ -31,6 +31,7 @@ describe('Cadastro de usuário', () => {
   })
 
   it('Cadastro sem sucesso - usuário já cadastrado', () => {
+    cy.apiCadastro('Victorino Salina', 'victorino.salina@example.com', 'senha123', true)
     cy.intercept('POST', '**/usuarios').as('usuarioExistente')
     cy.visit('/cadastrarusuarios')
     cy.campos('Victorino Salina', 'victorino.salina@example.com', 'senha123', true)
